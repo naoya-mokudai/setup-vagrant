@@ -138,22 +138,35 @@
 
 - block:
   - name: Setup Unit-Manager login.js
-    replace: dest=/tmp/app-uc-unit-manager/src/html/js/login.js regexp="let launchUrl = 'https://demo.personium.io/app-uc-unit-manager/__/unitmgr-light/environment.html'" replace="let launchUrl = 'https://localhost:1210/Unit-Manager/environment.html'" backup=yes
+    replace: 
+      dest: /tmp/app-uc-unit-manager/src/html/js/login.js
+      regexp: "let appUnitFQDN = 'demo.personium.io';"
+      replace: "let appUnitFQDN = 'localhost:1210';"
+      backup: yes
 
   - name: Setup Unit-Manager login.js
-    replace: dest=/tmp/app-uc-unit-manager/src/html/js/login.js regexp="'&contextRoot=https://demo.personium.io/app-uc-unit-manager/__/unitmgr-light'" replace="'&contextRoot=https://localhost:1210/Unit-Manager'" 
-  
-  - name: Setup Unit-Manager snapshot.js
-    replace: dest=/tmp/app-uc-unit-manager/src/html/templates/en/snapshot.html regexp="script type="text/javascript" src="https://demo.personium.io/app-uc-unit-manager/__/unitmgr-light-debug/js/snapshot.js"" replace="scrscript type="text/javascript" src="https://localhost:1210/Unit-Manager/js/snapshot.js""
-  
-  - name: Setup Unit-Manager snapshot.js
-    replace: dest=/tmp/app-uc-unit-manager/src/html/templates/en/snapshot.html regexp="script type="text/javascript" src="https://demo.personium.io/app-uc-unit-manager/__/unitmgr-light-debug/js/fileDownload.js"" replace="script type="text/javascript" src="https://localhost:1210/Unit-Manager/js/fileDownload.js""
-  
-  - name: Setup Unit-Manager default Unit URL
-    replace: dest=/tmp/app-uc-unit-manager/src/html/login.html regexp="<input type="text" autocomplete="off" placeholder="Uniturl"" replace="<input type="text" autocomplete="off" value="https://localhost:1210/""
+    replace:
+      dest: /tmp/app-uc-unit-manager/src/html/js/login.js
+      regexp: "managerUrl = 'https://'+appUnitFQDN+'/app-uc-unit-manager/';"
+      replace: "managerUrl = 'https://'+appUnitFQDN+'/Unit-Manager/';"
 
-  - name: Setup /personium/personium-core/conf/18888/personium-unit-config.properties
-    replace: dest=/personium/personium-core/conf/18888/personium-unit-config.properties regexp="io.personium.core.unitUser.issuers=https://localhost/UnitUserCell/ https://localhost/unitadmin/" replace="io.personium.core.unitUser.issuers=https://localhost/UnitUserCell/ https://localhost:1210/unitadmin/"
+  - name: Setup Unit-Manager login.js
+    replace:
+      dest: /tmp/app-uc-unit-manager/src/html/js/login.js
+      regexp: "managerUrl = 'https://app-uc-unit-manager.'+appUnitFQDN+'/';"
+      replace: "managerUrl = 'https://'+appUnitFQDN+'/Unit-Manager/';"
+  
+  - name: Setup Unit-Manager login.js
+    replace:
+      dest: /tmp/app-uc-unit-manager/src/html/js/login.js
+      regexp: "managerUrl = 'https://'+appUnitFQDN+'/app-uc-unit-manager/';"
+      replace: "managerUrl = 'https://'+appUnitFQDN+'/Unit-Manager/';"
+
+  - name: Setup Unit-Manager default Unit URL
+    replace:
+      dest: /tmp/app-uc-unit-manager/src/html/login.html
+      regexp: '<input type="text" autocomplete="off" placeholder="Login URL (with ending slash)" name="loginUrl" id="loginUrl" class="txtUnitUrl">'
+      replace: '<input type="text" autocomplete="off" placeholder="Login URL (with ending slash)" name="loginUrl" id="loginUrl" class="txtUnitUrl" value="https://localhost:1210/unitadmin/">'
 
   - name: Create /opt/nginx/html/Unit-Manager
     file: state=directory path=/opt/nginx/html/Unit-Manager owner=root group=root mode=0755
